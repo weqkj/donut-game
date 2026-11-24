@@ -107,24 +107,51 @@ function gate() {
 
 // ───────── cases ─────────
 const CASE_IC = { free: "🎁", starter: "📦", gold: "🏆", diamond: "💎" };
+const rar = (v, nft) => (nft || v >= 2000 ? "gold" : v >= 1000 ? "purple" : v >= 300 ? "blue" : "grey");
+const dropInfo = (d) => { if (d.coins) return { coins: d.coins, value: d.coins, r: rar(d.coins) }; const g = giftById(d.gift); return { g, value: gv(g), r: rar(gv(g), g.nft) }; };
+const tile = (d, extra = "") => { const i = dropInfo(d);
+  return `<div class="tile r-${i.r} ${extra}">${i.g ? giftImg(i.g) : `<div class="coin">🍩</div>`}<b>${i.g ? esc(i.g.name) : fmt(i.coins)}</b><small>${i.g ? i.g.stars + " " + STAR : "donut"}</small></div>`; };
+function previewImgs(c) {
+  const gs = c.drops.filter(d => d.gift).map(d => giftById(d.gift)).filter(g => g.img && URLS[g.img]).sort((a, b) => gv(b) - gv(a)).slice(0, 3);
+  return gs.length ? `<div class="stack">${gs.map((g, i) => `<img class="gift" style="--i:${i}" src="${URLS[g.img]}" alt="">`).join("")}</div>` : "";
+}
+function viewCases(v) {
+  const fr = me.free_in, tm = Math.ceil(fr / 60000), hrs = Math.floor(tm / 60), mins = tm % 60;
+  v.innerHTML = `<div class="case free" data-case="free"><div class="shine"></div>${anim("dog/sorry", "dog sm")}<div style="flex:1"><h3>${t("free")}</h3><p>${fr ? `${t("wait")} ${hrs}${t("h")} ${mins}${t("m")}` : t("free_d")}</p></div><button class="btn sm" style="background:#000;color:#fff" ${fr ? "disabled" : ""}>${t("open")}</button></div>
+    <div class="grid">${CASES.cases.filter(c => !c.daily).map(c => `<div class="case c-${c.id}" data-case="${c.id}"><div class="shine"></div><div class="ic">${CASE_IC[c.id]}</div>${previewImgs(c)}<h3>${c.id.toUpperCase()}</h3>${dropsPreview(c)}<button class="btn sm wide">🍩 ${fmt(c.price)}</button></div>`).join("")}</div>`;
+}
 function dropsPreview(c) {
   const coins = c.drops.filter(d => d.coins).map(d => d.coins), gifts = c.drops.filter(d => d.gift);
   return `<div class="drops">${coins.length ? `<span>🍩 ${fmt(Math.min(...coins))}–${fmt(Math.max(...coins))}</span>` : ""}${gifts.length ? `<span>🎁 ×${gifts.length}</span>` : ""}</div>`;
 }
-function viewCases(v) {
-  const fr = me.free_in, tm = Math.ceil(fr / 60000), hrs = Math.floor(tm / 60), mins = tm % 60;
-  v.innerHTML = `<div class="grid">
-    <div class="case free" data-case="free">${anim("dog/sorry", "dog sm")}<div style="flex:1"><h3>${t("free")}</h3><p>${fr ? `${t("wait")} ${hrs}${t("h")} ${mins}${t("m")}` : t("free_d")}</p></div><button class="btn sm" style="background:#000;color:#fff" ${fr ? "disabled" : ""}>${t("open")}</button></div>
-    ${CASES.cases.filter(c => !c.daily).map(c => `<div class="case" data-case="${c.id}"><div class="ic">${CASE_IC[c.id]}</div><h3>${c.id.toUpperCase()}</h3>${dropsPreview(c)}<button class="btn sm wide">🍩 ${fmt(c.price)}</button></div>`).join("")}</div>`;
+// case page: contents + chances
+function casePage(c) {
+  const tw = c.drops.reduce((s, d) => s + d.w, 0);
+  const list = c.drops.slice().sort((a, b) => dropInfo(b).value - dropInfo(a).value);
+  const m = sheet(`<div class="bigcase">${CASE_IC[c.id]}</div><h2>${c.id.toUpperCase()}</h2>
+    <div class="dgrid">${list.map(d => `<div class="dcell">${tile(d)}<span class="pct">${(d.w / tw * 100).toFixed(d.w / tw < .1 ? 1 : 0)}%</span></div>`).join("")}</div>
+    <button class="btn wide" id="goopen">${c.daily ? t("open") : "🍩 " + fmt(c.price) + " · " + t("open")}</button>`);
+  m.querySelector("#goopen").onclick = () => { m.remove(); runCase(c); };
 }
-async function openCase(id) {
-  const c = CASES.cases.find(x => x.id === id);
-  const r = await api("open_case", { id });
+async function runCase(c) {
+  const r = await api("open_case", { id: c.id });
   if (!r.ok) return toast(r.error === "cooldown" ? t("cooldown") : r.error === "balance" ? t("nobal") : t("err"));
-  haptic("medium"); await refresh();
-  const p = r.prize, g = p.gift ? giftById(p.gift) : null;
-  const dog = c.daily ? "dog/sorry" : g ? "dog/box" : "dog/happy";
-  sheet(`${anim(dog)}${g ? `<h2>${t("got_gift")}</h2><div class="${g.nft ? "rare-nft" : ""}" style="border-radius:22px">${giftImg(g)}</div><h3>${esc(g.name)} · ${g.stars} ${STAR}</h3>` : `<h2>${t("got_coins")}</h2><h1>🍩 +${fmt(p.coins)}</h1>`}${c.daily ? `<p>${t("free_msg")}</p>` : ""}`);
+  haptic("medium"); await refresh(); document.querySelectorAll(".bal").forEach(e => e.textContent = fmt(me.balance));
+  const p = r.prize, win = p.gift ? { gift: p.gift } : { coins: p.coins };
+  // roulette strip: random items with the winner at a fixed slot
+  const tw = c.drops.reduce((s, d) => s + d.w, 0), pickD = () => { let x = Math.random() * tw; for (const d of c.drops) if ((x -= d.w) < 0) return d; return c.drops[0]; };
+  const N = 44, W = 40, strip = Array.from({ length: N }, (_, i) => (i === W ? win : pickD()));
+  const m = document.createElement("div"); m.className = "modal spin";
+  m.innerHTML = `<div class="roul"><div class="vp"><div class="rail">${strip.map(d => tile(d)).join("")}</div><div class="ptr"></div></div><p>${c.id.toUpperCase()}</p></div>`;
+  document.body.appendChild(m);
+  const rail = m.querySelector(".rail"), vp = m.querySelector(".vp"), tw_ = 104;
+  const target = W * tw_ + tw_ / 2 - vp.clientWidth / 2 + (Math.random() * 50 - 25);
+  rail.getBoundingClientRect(); rail.style.transition = "transform 5.2s cubic-bezier(.08,.75,.12,1)"; rail.style.transform = `translateX(${-target}px)`;
+  const tick = setInterval(() => haptic("light"), 220);
+  await new Promise(res => setTimeout(res, 5400)); clearInterval(tick); m.remove();
+  const g = p.gift ? giftById(p.gift) : null;
+  haptic("heavy");
+  sheet(`${anim(c.daily ? "dog/sorry" : g ? "dog/box" : "dog/happy")}${g ? `<h2>${t("got_gift")}</h2><div class="tile r-${rar(gv(g), g.nft)}" style="width:150px;padding:14px">${giftImg(g)}<b>${esc(g.name)}</b><small>${g.stars} ${STAR}</small></div>` : `<h2>${t("got_coins")}</h2><h1>🍩 +${fmt(p.coins)}</h1>`}${c.daily ? `<p>${t("free_msg")}</p>` : ""}`);
   if (tab === "cases") render();
 }
 
@@ -260,7 +287,7 @@ async function onClick(e) {
   const T = (s) => e.target.closest(s);
   let b;
   if ((b = T("[data-tab]"))) { tab = b.dataset.tab; haptic(); return render(); }
-  if ((b = T("[data-case]"))) { const c = CASES.cases.find(x => x.id === b.dataset.case); if (c.daily && me.free_in) return toast(t("cooldown")); return openCase(c.id); }
+  if ((b = T("[data-case]"))) { const c = CASES.cases.find(x => x.id === b.dataset.case); if (c.daily && me.free_in) return toast(t("cooldown")); return casePage(c); }
   if ((b = T("[data-pay]"))) return pay(Number(b.dataset.pay));
   if ((b = T("[data-sell]"))) { const r = await api("sell", { id: Number(b.dataset.sell) }); if (r.ok) { toast(`+${fmt(r.coins)} 🍩`); await refresh(); render(); } return; }
   if ((b = T("[data-upg]"))) return upgradeSheet(Number(b.dataset.upg));
