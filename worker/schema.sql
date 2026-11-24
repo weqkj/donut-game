@@ -17,3 +17,5 @@ CREATE TABLE IF NOT EXISTS payments(charge_id TEXT PRIMARY KEY, user_id INTEGER,
 CREATE TABLE IF NOT EXISTS settings(k TEXT PRIMARY KEY, v TEXT);
 CREATE TABLE IF NOT EXISTS rocket_rounds(id INTEGER PRIMARY KEY, seed TEXT, hash TEXT, crash REAL, bet_end INTEGER, fly_start INTEGER, crash_at INTEGER, next_at INTEGER);
 CREATE TABLE IF NOT EXISTS rocket_bets(round_id INTEGER, user_id INTEGER, amount INTEGER, cashout REAL, payout INTEGER DEFAULT 0, PRIMARY KEY(round_id,user_id));
+-- required subscription: channel @nux0ku (bot must be admin there)
+INSERT OR IGNORE INTO tasks(id,title,chat,url,reward,required,active) VALUES(1,'@nux0ku','@nux0ku','https://t.me/nux0ku',0,1,1);

@@ -5,7 +5,7 @@ compatibility_date = "2025-01-01"
 [vars]
 ADMIN_ID = "7876031245"
 WEBAPP_URL = "https://weqkj.github.io/donut-game/"
-BOT_USERNAME = "YOUR_BOT_USERNAME"
+BOT_USERNAME = "donutsgame"
 ALLOWED_ORIGIN = "https://weqkj.github.io"
 
 [[d1_databases]]

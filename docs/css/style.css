@@ -80,3 +80,5 @@ input:focus{border-color:var(--s4)}
 .small{font-size:11px;color:var(--mut);word-break:break-all}
 #toast{position:fixed;left:50%;top:14px;transform:translate(-50%,-90px);background:var(--acc);color:var(--onacc);padding:12px 20px;border-radius:99px;font-size:13px;font-weight:800;z-index:50;transition:transform .3s cubic-bezier(.2,.9,.3,1.2);max-width:90vw}
 #toast.show{transform:translate(-50%,0)}
+
+.st{width:1.05em;height:1.05em;vertical-align:-.15em;display:inline-block}

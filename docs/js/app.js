@@ -12,6 +12,7 @@ if (tgw) { try { tgw.ready(); tgw.expand(); tgw.setHeaderColor("#000000"); tgw.s
 const ls = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch {} } };
 
 let URLS = {}, GIFTS = null, CASES = null, me = null, tab = "cases";
+const STAR = `<img class="st" src="assets/icons/star.svg" alt="⭐">`;
 const haptic = (k = "light") => { try { tgw.HapticFeedback.impactOccurred(k); } catch {} };
 function toast(msg) { const el = $("#toast"); el.textContent = msg; el.classList.add("show"); clearTimeout(toast.t); toast.t = setTimeout(() => el.classList.remove("show"), 2400); }
 
@@ -66,7 +67,9 @@ function tutorial(i) {
 // ───────── main shell ─────────
 async function main() {
   me = await api("me"); if (!me.ok) { app.innerHTML = `<div class="center"><h2>${t("err")}</h2></div>`; return; }
-  app.onclick = onClick; render();
+  app.onclick = onClick;
+  if (me.need_sub && me.need_sub.length) return gate();
+  render();
   const sp = startParam();
   if (sp.startsWith("chk_") || sp.startsWith("promo_")) { const r = await api(sp.startsWith("chk_") ? "check" : "promo", { code: sp }); toast(r.ok ? `${t("got")}: +${fmt(r.coins)} 🍩` : t(r.error === "used" ? "used" : "bad_code")); refresh(); }
 }
@@ -84,6 +87,13 @@ function sheet(html) {
   const m = document.createElement("div"); m.className = "modal"; m.innerHTML = `<div class="sheet">${html}<button class="btn ghost wide" data-close>${t("close")}</button></div>`;
   m.onclick = (e) => { if (e.target === m || e.target.closest("[data-close]")) m.remove(); };
   document.body.appendChild(m); return m;
+}
+
+function gate() {
+  app.innerHTML = `<div class="center">${anim("dog/sideeye")}<h1>${t("sub_need")}</h1><div class="col" style="width:100%;max-width:340px">
+    ${me.need_sub.map(k => `<a class="btn ghost wide" style="text-decoration:none;display:block" href="${esc(k.url)}" target="_blank">${esc(k.title)}</a>`).join("")}
+    <button class="btn wide" id="subchk">${t("check")}</button></div></div>`;
+  $("#subchk").onclick = async () => { me = await api("me"); if (me.need_sub && me.need_sub.length) return toast(t("sub_no")); render(); };
 }
 
 // ───────── cases ─────────
@@ -105,7 +115,7 @@ async function openCase(id) {
   haptic("medium"); await refresh();
   const p = r.prize, g = p.gift ? giftById(p.gift) : null;
   const dog = c.daily ? "dog/sorry" : g ? "dog/box" : "dog/happy";
-  sheet(`${anim(dog)}${g ? `<h2>${t("got_gift")}</h2><div class="${g.nft ? "rare-nft" : ""}" style="border-radius:22px">${giftImg(g)}</div><h3>${esc(g.name)} · ${g.stars} ⭐</h3>` : `<h2>${t("got_coins")}</h2><h1>🍩 +${fmt(p.coins)}</h1>`}${c.daily ? `<p>${t("free_msg")}</p>` : ""}`);
+  sheet(`${anim(dog)}${g ? `<h2>${t("got_gift")}</h2><div class="${g.nft ? "rare-nft" : ""}" style="border-radius:22px">${giftImg(g)}</div><h3>${esc(g.name)} · ${g.stars} ${STAR}</h3>` : `<h2>${t("got_coins")}</h2><h1>🍩 +${fmt(p.coins)}</h1>`}${c.daily ? `<p>${t("free_msg")}</p>` : ""}`);
   if (tab === "cases") render();
 }
 
@@ -123,10 +133,10 @@ function viewProfile(v) {
   const link = `https://t.me/${me.bot || BOT_USERNAME}?start=ref_${me.id}`;
   v.innerHTML = `<div class="card row">${anim("dog/trot", "dog sm")}<div style="flex:1;min-width:0"><h2>${esc(me.name || "Player")}</h2><p>${t("level")} ${me.level} · XP ${me.xp}</p></div></div>
    <div class="card col"><div class="row" style="justify-content:space-between"><h3>${t("balance")}</h3><h2>🍩 <span class="bal">${fmt(me.balance)}</span></h2></div>
-     <p>${t("topup_d")}</p><div class="seg">${(me.packs || [5, 15, 50]).map(s => `<button data-pay="${s}">${s} ⭐</button>`).join("")}</div>
+     <p>${t("topup_d")}</p><div class="seg">${(me.packs || [5, 15, 50]).map(s => `<button data-pay="${s}">${s} ${STAR}</button>`).join("")}</div>
      <button class="btn ghost wide" data-w="coins">${t("w_coins")}</button><p style="font-size:11px">${t("w_rules")}</p></div>
-   <div class="card col"><h3>${t("gifts")}</h3>${me.inv.length ? `<div class="grid">${me.inv.map(i => { const g = giftById(i.gift_id); return `<div class="item" style="flex-direction:column;text-align:center;gap:6px">${giftImg(g)}<span class="n" style="max-width:100%">${esc(g.name)}</span><span class="pill">${g.stars} ⭐ · 🍩${fmt(gv(g))}</span><div class="row wrap" style="justify-content:center"><button class="btn sm ghost" data-sell="${i.id}">${t("sell")}</button><button class="btn sm ghost" data-upg="${i.id}">⬆</button><button class="btn sm ghost" data-w="gift:${i.id}">💸</button></div></div>`; }).join("")}</div>` : `<p>${t("nogifts")}</p>`}</div>
-   <div class="card col"><h3>${t("refs")}</h3><p>${t("refs_d")}</p><div class="row wrap"><span class="pill">👥 ${me.refs.total}</span><span class="pill">📦 ${me.refs.opened}/5</span><span class="pill">⭐ ${me.refs.deposited}/1</span></div>
+   <div class="card col"><h3>${t("gifts")}</h3>${me.inv.length ? `<div class="grid">${me.inv.map(i => { const g = giftById(i.gift_id); return `<div class="item" style="flex-direction:column;text-align:center;gap:6px">${giftImg(g)}<span class="n" style="max-width:100%">${esc(g.name)}</span><span class="pill">${g.stars} ${STAR} · 🍩${fmt(gv(g))}</span><div class="row wrap" style="justify-content:center"><button class="btn sm ghost" data-sell="${i.id}">${t("sell")}</button><button class="btn sm ghost" data-upg="${i.id}">⬆</button><button class="btn sm ghost" data-w="gift:${i.id}">💸</button></div></div>`; }).join("")}</div>` : `<p>${t("nogifts")}</p>`}</div>
+   <div class="card col"><h3>${t("refs")}</h3><p>${t("refs_d")}</p><div class="row wrap"><span class="pill">👥 ${me.refs.total}</span><span class="pill">📦 ${me.refs.opened}/5</span><span class="pill">${STAR} ${me.refs.deposited}/1</span></div>
      <button class="btn ghost wide" data-copy="${esc(link)}">${t("copy")}</button></div>
    <div class="card col"><h3>${t("promo")}</h3><div class="row"><input id="promo" placeholder="CODE" autocapitalize="characters"><button class="btn" data-promo>${t("apply")}</button></div></div>
    <div class="card col" id="tasks"></div>`;
@@ -152,7 +162,7 @@ async function doWithdraw(spec) {
 function upgradeSheet(id) {
   const it = me.inv.find(i => i.id === id), from = gv(giftById(it.gift_id));
   const targets = GIFTS.gifts.filter(g => gv(g) > from).sort((a, b) => gv(a) - gv(b));
-  const m = sheet(`<h2>${t("upg_pick")}</h2>${targets.length ? targets.map(g => `<div class="item wide" style="width:100%"><span class="n">${esc(g.name)} · ${g.stars} ⭐</span><span class="pill">${t("chance")} ≈${Math.round(Math.min(95, 90 * from / gv(g)))}%</span><button class="btn sm" data-do-upg="${g.id}">⬆</button></div>`).join("") : `<p>—</p>`}`);
+  const m = sheet(`<h2>${t("upg_pick")}</h2>${targets.length ? targets.map(g => `<div class="item wide" style="width:100%"><span class="n">${esc(g.name)} · ${g.stars} ${STAR}</span><span class="pill">${t("chance")} ≈${Math.round(Math.min(95, 90 * from / gv(g)))}%</span><button class="btn sm" data-do-upg="${g.id}">⬆</button></div>`).join("") : `<p>—</p>`}`);
   m.addEventListener("click", async (e) => {
     const b = e.target.closest("[data-do-upg]"); if (!b) return;
     const r = await api("upgrade", { id, to: b.dataset.doUpg }); m.remove();

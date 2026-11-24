@@ -10,22 +10,18 @@ worker/   бэкенд на Cloudflare Workers + D1 (бот, Stars, баланс
 
 Без сервера сайт работает в **демо-режиме** (локально, без Telegram) — удобно смотреть дизайн.
 
-## Запуск
-1. **BotFather** → создай бота, получи токен. `/newapp` или Menu Button → URL сайта.
-2. **GitHub Pages**: Settings → Pages → Deploy from branch → `main` / `/docs`.
-3. **Cloudflare** (бесплатно):
-   ```bash
-   cd worker && npm i -g wrangler && wrangler login
-   wrangler d1 create donut                 # скопируй database_id
-   cp wrangler.toml.example wrangler.toml   # впиши database_id и BOT_USERNAME
-   wrangler d1 execute donut --remote --file=schema.sql
-   wrangler secret put BOT_TOKEN            # токен бота ТОЛЬКО сюда, не в код
-   wrangler secret put WEBHOOK_SECRET       # любая длинная случайная строка
-   wrangler deploy
-   ```
-4. Webhook: `https://api.telegram.org/bot<TOKEN>/setWebhook?url=<worker-url>/webhook&secret_token=<WEBHOOK_SECRET>`
-5. В `docs/js/config.js` впиши `API_URL` (адрес воркера) и `BOT_USERNAME`, закоммить.
-6. Для обязательных подписок бот должен быть админом канала.
+## Запуск (без терминала, всё через GitHub)
+1. **GitHub Pages**: Settings → Pages → Deploy from branch → `main` / `/docs`.
+2. **Cloudflare** (бесплатно): создай аккаунт → Storage & Databases → D1 → создай базу `donut` → скопируй её ID в `worker/wrangler.toml` (`database_id`).
+   Создай API-токен (My Profile → API Tokens → шаблон «Edit Cloudflare Workers» + право D1:Edit) и запомни Account ID.
+3. **GitHub** → Settings → Secrets and variables → Actions:
+   - Secrets: `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `BOT_TOKEN` (токен от BotFather), `WEBHOOK_SECRET` (любая случайная строка).
+   - Variable: `WORKER_URL` (адрес воркера, `https://donut-game.<твой-аккаунт>.workers.dev`).
+4. Actions → «Deploy worker» → Run workflow. Он накатит базу, задеплоит воркер, положит токен в секреты Cloudflare и поставит webhook.
+5. В `docs/js/config.js` впиши `API_URL` (тот же адрес воркера).
+6. BotFather → Menu Button / `/newapp` → URL `https://<аккаунт>.github.io/donut-game/`.
+
+Обязательная подписка: канал `@nux0ku` уже заведён в `worker/schema.sql` (бот должен быть админом канала).
 
 ## Важно
 - **Токен бота нельзя хранить в репозитории и на GitHub Pages** — только как секрет Worker.

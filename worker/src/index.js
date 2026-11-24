@@ -123,7 +123,13 @@ async function state({ me, env, isAdmin }) {
   const u = await env.DB.prepare("SELECT * FROM users WHERE id=?").bind(me.id).first();
   const inv = (await env.DB.prepare("SELECT id,gift_id FROM inventory WHERE user_id=? ORDER BY id DESC").bind(me.id).all()).results;
   const refs = await env.DB.prepare("SELECT COUNT(*) c, SUM(CASE WHEN opened>0 THEN 1 ELSE 0 END) o, SUM(CASE WHEN deposited_stars>0 THEN 1 ELSE 0 END) d FROM users WHERE ref_by=?").bind(me.id).first();
-  return { ok: true, id: u.id, name: u.first_name, username: u.username, balance: u.balance, opened: u.opened, xp: u.xp, level: 1 + Math.floor(Math.sqrt(u.xp / 10)),
+  const req = (await env.DB.prepare("SELECT * FROM tasks WHERE active=1 AND required=1 AND chat IS NOT NULL").all()).results;
+  const need_sub = [];
+  if (String(me.id) !== String(env.ADMIN_ID)) for (const k of req) {
+    const r = await tg(env)("getChatMember", { chat_id: k.chat, user_id: me.id });
+    if (!r.ok || !["member", "administrator", "creator"].includes(r.result.status)) need_sub.push({ id: k.id, title: k.title, url: k.url });
+  }
+  return { ok: true, need_sub, id: u.id, name: u.first_name, username: u.username, balance: u.balance, opened: u.opened, xp: u.xp, level: 1 + Math.floor(Math.sqrt(u.xp / 10)),
     premium: !!u.is_premium, free_in: Math.max(0, u.last_free + 86400000 - now()), inv, isAdmin,
     refs: { total: refs.c || 0, opened: refs.o || 0, deposited: refs.d || 0 }, bot: env.BOT_USERNAME, packs: PACKS, now: now() };
 }

@@ -21,7 +21,7 @@ ru: {
  rocket:"Ракета", bet:"Ставка", place:"Поставить", cash:"Забрать", betting:"Приём ставок", flying:"Летим…", crashed:"Упала на",
  you_won:"Забрал", you_lost:"Проиграл", late:"Поздно", verify:"Проверить честность", fair_ok:"Честно: хеш совпал", hash:"Хеш раунда", demo:"Демо-режим (без сервера)",
  tasks:"Задания", go_task:"Выполнить", check:"Проверить", done:"Готово",
- err:"Ошибка", close:"Закрыть",
+ err:"Ошибка", close:"Закрыть", sub_need:"Подпишись на канал, чтобы играть", sub_no:"Подписка не найдена",
 },
 en: {
  loading:"Loading…", choose:"Choose your language", hi:"Welcome to the bot! I'm your dog guide. Let me quickly show you around.",
@@ -44,7 +44,7 @@ en: {
  rocket:"Rocket", bet:"Bet", place:"Place bet", cash:"Cash out", betting:"Betting open", flying:"Flying…", crashed:"Crashed at",
  you_won:"Cashed out", you_lost:"Lost", late:"Too late", verify:"Verify fairness", fair_ok:"Fair: hash matches", hash:"Round hash", demo:"Demo mode (no server)",
  tasks:"Tasks", go_task:"Open", check:"Check", done:"Done",
- err:"Error", close:"Close",
+ err:"Error", close:"Close", sub_need:"Subscribe to the channel to play", sub_no:"Subscription not found",
 },
 uk: {
  loading:"Завантаження…", choose:"Обери мову", hi:"Ласкаво просимо до бота! Я твій пес-провідник. Зараз швидко покажу, що тут є.",
@@ -67,7 +67,7 @@ uk: {
  rocket:"Ракета", bet:"Ставка", place:"Поставити", cash:"Забрати", betting:"Приймаємо ставки", flying:"Летимо…", crashed:"Впала на",
  you_won:"Забрав", you_lost:"Програв", late:"Запізно", verify:"Перевірити чесність", fair_ok:"Чесно: хеш збігається", hash:"Хеш раунду", demo:"Демо-режим (без сервера)",
  tasks:"Завдання", go_task:"Виконати", check:"Перевірити", done:"Готово",
- err:"Помилка", close:"Закрити",
+ err:"Помилка", close:"Закрити", sub_need:"Підпишись на канал, щоб грати", sub_no:"Підписку не знайдено",
 }};
 let cur = "ru";
 export const setLang = (l) => { cur = D[l] ? l : "en"; document.documentElement.lang = cur; };
