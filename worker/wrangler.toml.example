@@ -1,0 +1,17 @@
+name = "donut-game"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+ADMIN_ID = "7876031245"
+WEBAPP_URL = "https://weqkj.github.io/donut-game/"
+BOT_USERNAME = "YOUR_BOT_USERNAME"
+ALLOWED_ORIGIN = "https://weqkj.github.io"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "donut"
+database_id = "PUT_YOUR_D1_ID_HERE"
+
+# Secrets (NEVER commit them):  wrangler secret put BOT_TOKEN
+#                               wrangler secret put WEBHOOK_SECRET

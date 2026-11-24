@@ -1,0 +1,22 @@
+{
+  "rate": 18,
+  "gifts": [
+    {"id":"bear","name":"Mishka","stars":15,"rarity":"common","img":"gifts/bear"},
+    {"id":"heart","name":"Heart","stars":15,"rarity":"common","img":null},
+    {"id":"rose","name":"Rose","stars":25,"rarity":"uncommon","img":"gifts/rose"},
+    {"id":"cake","name":"Cake","stars":50,"rarity":"rare","img":"gifts/cake"},
+    {"id":"bouquet","name":"Bouquet","stars":50,"rarity":"rare","img":"gifts/bouquet"},
+    {"id":"rocket","name":"Rocket","stars":50,"rarity":"rare","img":"gifts/rocket"},
+    {"id":"trophy","name":"Trophy","stars":100,"rarity":"epic","img":"gifts/trophy"},
+    {"id":"ring","name":"Ring","stars":100,"rarity":"epic","img":"gifts/ring"},
+    {"id":"diamond","name":"Diamond","stars":100,"rarity":"epic","img":"gifts/diamond"},
+    {"id":"xmas_stocking","name":"Xmas Stocking","stars":318,"rarity":"nft","img":null,"nft":true},
+    {"id":"snake_box","name":"Snake Box","stars":319,"rarity":"nft","img":null,"nft":true},
+    {"id":"pool_float","name":"Pool Float","stars":331,"rarity":"nft","img":null,"nft":true},
+    {"id":"lunar_snake","name":"Lunar Snake","stars":333,"rarity":"nft","img":null,"nft":true},
+    {"id":"pet_snake","name":"Pet Snake","stars":333,"rarity":"nft","img":null,"nft":true},
+    {"id":"snow_globe","name":"Snow Globe","stars":550,"rarity":"nft","img":null,"nft":true},
+    {"id":"snow_mittens","name":"Snow Mittens","stars":623,"rarity":"nft","img":null,"nft":true}
+  ],
+  "withdraw": {"coins_min":15000,"coins_stars":21,"nft_min_stars":600,"refs_needed":5,"refs_deposit_needed":1,"sell_rate":0.8}
+}

@@ -1,0 +1,16 @@
+{
+  "cases": [
+    {"id":"free","price":0,"daily":true,"dog":"sorry","drops":[
+      {"coins":5,"w":40},{"coins":10,"w":30},{"coins":20,"w":16},{"coins":30,"w":9},{"coins":60,"w":5}]},
+    {"id":"starter","price":90,"drops":[
+      {"coins":30,"w":34},{"coins":60,"w":30},{"coins":90,"w":18},{"coins":150,"w":10},
+      {"gift":"bear","w":5},{"gift":"heart","w":3}]},
+    {"id":"gold","price":450,"drops":[
+      {"coins":150,"w":20},{"coins":300,"w":24},{"coins":450,"w":24},{"coins":700,"w":12},
+      {"gift":"bear","w":6},{"gift":"heart","w":4},{"gift":"rose","w":5},{"gift":"cake","w":3},{"gift":"bouquet","w":2}]},
+    {"id":"diamond","price":1800,"drops":[
+      {"coins":700,"w":20},{"coins":1200,"w":24},{"coins":1800,"w":20},{"coins":3000,"w":8},
+      {"gift":"cake","w":6},{"gift":"bouquet","w":5},{"gift":"rocket","w":5},
+      {"gift":"trophy","w":4},{"gift":"ring","w":3},{"gift":"diamond","w":2},{"gift":"xmas_stocking","w":3}]}
+  ]
+}

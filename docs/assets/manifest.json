@@ -1,0 +1,170 @@
+{
+ "dog/hi": {
+  "file": "assets/dog/hi.webp",
+  "loop": 1,
+  "kb": 1200,
+  "frames": 90,
+  "ms": 3000
+ },
+ "dog/sit": {
+  "file": "assets/dog/sit.webp",
+  "loop": 1,
+  "kb": 924,
+  "frames": 72,
+  "ms": 2400
+ },
+ "dog/happy": {
+  "file": "assets/dog/happy.webp",
+  "loop": 1,
+  "kb": 970,
+  "frames": 74,
+  "ms": 2470
+ },
+ "dog/cry": {
+  "file": "assets/dog/cry.webp",
+  "loop": 1,
+  "kb": 885,
+  "frames": 60,
+  "ms": 2000
+ },
+ "dog/deposit": {
+  "file": "assets/dog/deposit.webp",
+  "loop": 1,
+  "kb": 846,
+  "frames": 65,
+  "ms": 2170
+ },
+ "dog/angry": {
+  "file": "assets/dog/angry.webp",
+  "loop": 1,
+  "kb": 989,
+  "frames": 89,
+  "ms": 2970
+ },
+ "dog/sorry": {
+  "file": "assets/dog/sorry.webp",
+  "loop": 1,
+  "kb": 1408,
+  "frames": 90,
+  "ms": 3000
+ },
+ "dog/box": {
+  "file": "assets/dog/box.webp",
+  "loop": 1,
+  "kb": 937,
+  "frames": 53,
+  "ms": 1770
+ },
+ "dog/podium": {
+  "file": "assets/dog/podium.webp",
+  "loop": 1,
+  "kb": 628,
+  "frames": 60,
+  "ms": 2000
+ },
+ "dog/sideeye": {
+  "file": "assets/dog/sideeye.webp",
+  "loop": 1,
+  "kb": 988,
+  "frames": 71,
+  "ms": 2370
+ },
+ "dog/trot": {
+  "file": "assets/dog/trot.webp",
+  "loop": 1,
+  "kb": 652,
+  "frames": 55,
+  "ms": 1830
+ },
+ "dog/yep": {
+  "file": "assets/dog/yep.webp",
+  "loop": 1,
+  "kb": 562,
+  "frames": 42,
+  "ms": 1400
+ },
+ "gifts/bear": {
+  "file": "assets/gifts/bear.webp",
+  "loop": 1,
+  "kb": 630,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/cake": {
+  "file": "assets/gifts/cake.webp",
+  "loop": 1,
+  "kb": 700,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/rose": {
+  "file": "assets/gifts/rose.webp",
+  "loop": 1,
+  "kb": 891,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/bouquet": {
+  "file": "assets/gifts/bouquet.webp",
+  "loop": 1,
+  "kb": 884,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/rocket": {
+  "file": "assets/gifts/rocket.webp",
+  "loop": 1,
+  "kb": 800,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/ring": {
+  "file": "assets/gifts/ring.webp",
+  "loop": 1,
+  "kb": 485,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/trophy": {
+  "file": "assets/gifts/trophy.webp",
+  "loop": 1,
+  "kb": 554,
+  "frames": 90,
+  "ms": 3000
+ },
+ "gifts/diamond": {
+  "file": "assets/gifts/diamond.webp",
+  "loop": 1,
+  "kb": 764,
+  "frames": 90,
+  "ms": 3000
+ },
+ "rockets/classic": {
+  "file": "assets/rockets/classic.webp",
+  "loop": 0,
+  "kb": 800,
+  "frames": 90,
+  "ms": 3000
+ },
+ "rockets/fish": {
+  "file": "assets/rockets/fish.webp",
+  "loop": 0,
+  "kb": 593,
+  "frames": 90,
+  "ms": 1800
+ },
+ "rockets/ice": {
+  "file": "assets/rockets/ice.webp",
+  "loop": 0,
+  "kb": 585,
+  "frames": 90,
+  "ms": 1800
+ },
+ "rockets/banana": {
+  "file": "assets/rockets/banana.webp",
+  "loop": 0,
+  "kb": 490,
+  "frames": 90,
+  "ms": 1800
+ }
+}
