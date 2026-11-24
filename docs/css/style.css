@@ -82,3 +82,13 @@ input:focus{border-color:var(--s4)}
 #toast.show{transform:translate(-50%,0)}
 
 .st{width:1.05em;height:1.05em;vertical-align:-.15em;display:inline-block}
+
+#tour{position:fixed;inset:0;z-index:40}
+#tour .dim{position:absolute;inset:0;background:#000b}
+#tour .spot{position:absolute;border-radius:99px;box-shadow:0 0 0 100vmax #000b;outline:3px solid var(--acc);transition:all .3s}
+#tour .tcard{position:absolute;left:50%;transform:translateX(-50%);width:min(92vw,420px);display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
+#tour .tcard .bubble{background:var(--s2);border:2px solid var(--s3)}
+#tour .arrow{position:absolute;bottom:-14px;width:0;height:0;border:9px solid transparent;border-top-color:var(--s3);margin-left:-9px;transform:translateX(0)}
+.dog.sm2{width:110px;height:110px}
+.hl{outline:3px solid var(--acc);outline-offset:4px;animation:pl 1.2s ease-in-out infinite}
+@keyframes pl{50%{outline-offset:8px;outline-color:#ffffff66}}

@@ -45,23 +45,31 @@ async function boot() {
   app.innerHTML = `<div class="center"><div style="font-size:64px">🍩</div><h1>Donut Game</h1><div class="bar"><i></i></div><p id="ld">${t("loading")}</p></div>`;
   await preload();
   if (!saved) return langScreen();
-  if (!ls.get("dg_tut")) return tutorial(0);
   main();
 }
 function langScreen() {
   app.innerHTML = `<div class="center">${anim("dog/sit")}<h1>${t("choose")}</h1><div class="col" style="width:100%;max-width:320px">
     ${Object.entries(LANGS).map(([k, v]) => `<button class="btn ghost wide" data-lang="${k}">${v}</button>`).join("")}</div></div>`;
-  app.onclick = (e) => { const b = e.target.closest("[data-lang]"); if (!b) return; ls.set("dg_lang", b.dataset.lang); setLang(b.dataset.lang); tutorial(0); };
+  app.onclick = (e) => { const b = e.target.closest("[data-lang]"); if (!b) return; ls.set("dg_lang", b.dataset.lang); setLang(b.dataset.lang); main(); };
 }
-const STEPS = [["dog/hi", "hi"], ["dog/happy", "t_cases"], ["dog/podium", "t_top"], ["dog/trot", "t_profile"], ["dog/yep", "t_games"]];
-function tutorial(i) {
-  const [d, k] = STEPS[i], last = i === STEPS.length - 1;
-  app.innerHTML = `<div class="center">${anim(d)}<div class="bubble"><p>${t(k)}</p></div>
-    <div class="row"><button class="btn" data-n>${last ? t("go") : t("next")}</button>${last ? "" : `<button class="btn ghost" data-s>${t("skip")}</button>`}</div></div>`;
-  app.onclick = (e) => {
-    if (e.target.closest("[data-n]")) { if (last) { ls.set("dg_tut", "1"); main(); } else tutorial(i + 1); }
-    if (e.target.closest("[data-s]")) { ls.set("dg_tut", "1"); main(); }
-  };
+// ───────── guided tour on the real interface ─────────
+const TOUR = [["dog/hi", "hi", null], ["dog/happy", "t_cases", "cases"], ["dog/podium", "t_top", "top"], ["dog/trot", "t_profile", "profile"], ["dog/yep", "t_games", "games"]];
+function tour(i) {
+  document.querySelectorAll("#tour").forEach(e => e.remove());
+  document.querySelectorAll(".hl").forEach(e => e.classList.remove("hl"));
+  if (i >= TOUR.length) { ls.set("dg_tut", "1"); return; }
+  const [dog, key, tb] = TOUR[i], last = i === TOUR.length - 1;
+  if (tb && tab !== tb) { tab = tb; render(); }
+  const btn = tb && document.querySelector(`[data-tab="${tb}"]`), r = btn && btn.getBoundingClientRect();
+  if (tb === "cases") { const f = $(".case.free"); f && f.classList.add("hl"); }
+  const o = document.createElement("div"); o.id = "tour";
+  const bottom = r ? innerHeight - r.top + 20 : null;
+  o.innerHTML = `${r ? `<div class="spot" style="left:${r.left - 4}px;top:${r.top - 4}px;width:${r.width + 8}px;height:${r.height + 8}px"></div>` : `<div class="dim"></div>`}
+    <div class="tcard" style="${r ? `bottom:${bottom}px` : "top:50%;transform:translate(-50%,-50%)"}">${anim(dog, "dog sm2")}<div class="bubble"><p>${t(key)}</p></div>
+    <div class="row"><button class="btn sm" data-tn>${last ? t("go") : t("next")}</button>${last ? "" : `<button class="btn sm ghost" data-ts>${t("skip")}</button>`}</div>
+    ${r ? `<i class="arrow" style="left:${r.left + r.width / 2}px"></i>` : ""}</div>`;
+  o.onclick = (e) => { e.stopPropagation(); if (e.target.closest("[data-tn]")) { if (last) { tab = "cases"; render(); } tour(i + 1); } else if (e.target.closest("[data-ts]")) { tab = "cases"; render(); tour(TOUR.length); } };
+  document.body.appendChild(o);
 }
 
 // ───────── main shell ─────────
@@ -70,6 +78,7 @@ async function main() {
   app.onclick = onClick;
   if (me.need_sub && me.need_sub.length) return gate();
   render();
+  if (!ls.get("dg_tut")) tour(0);
   const sp = startParam();
   if (sp.startsWith("chk_") || sp.startsWith("promo_")) { const r = await api(sp.startsWith("chk_") ? "check" : "promo", { code: sp }); toast(r.ok ? `${t("got")}: +${fmt(r.coins)} 🍩` : t(r.error === "used" ? "used" : "bad_code")); refresh(); }
 }
@@ -93,7 +102,7 @@ function gate() {
   app.innerHTML = `<div class="center">${anim("dog/sideeye")}<h1>${t("sub_need")}</h1><div class="col" style="width:100%;max-width:340px">
     ${me.need_sub.map(k => `<a class="btn ghost wide" style="text-decoration:none;display:block" href="${esc(k.url)}" target="_blank">${esc(k.title)}</a>`).join("")}
     <button class="btn wide" id="subchk">${t("check")}</button></div></div>`;
-  $("#subchk").onclick = async () => { me = await api("me"); if (me.need_sub && me.need_sub.length) return toast(t("sub_no")); render(); };
+  $("#subchk").onclick = async () => { me = await api("me"); if (me.need_sub && me.need_sub.length) return toast(t("sub_no")); render(); if (!ls.get("dg_tut")) tour(0); };
 }
 
 // ───────── cases ─────────
